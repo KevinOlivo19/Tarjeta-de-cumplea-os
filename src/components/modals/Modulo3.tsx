@@ -23,16 +23,29 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
   const [direction, setDirection] = useState<number>(0);
   const [showTextModal, setShowTextModal] = useState<boolean>(false);
 
+  // Evitar saltos dobles (brincos de dos en dos) al deslizar
+  const isNavigatingRef = useRef(false);
+
   // Navegación en el visor de foto grande
   const handlePrevPhoto = useCallback(() => {
-    if (selectedPhotoIndex === null) return;
+    if (selectedPhotoIndex === null || isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 280);
+
     setDirection(-1);
     setSelectedPhotoIndex((prev) => (prev! - 1 + memories.length) % memories.length);
     soundEngine.playHoverChime();
   }, [memories.length, selectedPhotoIndex]);
 
   const handleNextPhoto = useCallback(() => {
-    if (selectedPhotoIndex === null) return;
+    if (selectedPhotoIndex === null || isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 280);
+
     setDirection(1);
     setSelectedPhotoIndex((prev) => (prev! + 1) % memories.length);
     soundEngine.playHoverChime();
@@ -206,14 +219,15 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
       {/* ========================================================================= */}
       <AnimatePresence>
         {selectedPhotoIndex !== null && selectedMemory && (
-          <div className="fixed inset-0 z-[120] bg-black/92 md:bg-black/85 md:backdrop-blur-md flex items-center justify-center p-1 sm:p-3 md:p-6 overflow-hidden select-none">
-            {/* Clic al fondo para cerrar */}
+          <div className="fixed inset-0 z-[120] bg-black/75 backdrop-blur-md flex items-center justify-center p-1 sm:p-3 md:p-6 overflow-hidden select-none">
+            {/* Clic al fondo para cerrar con difuminado suave */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setSelectedPhotoIndex(null)}
-              className="fixed inset-0"
+              className="fixed inset-0 bg-black/50 backdrop-blur-md"
             />
 
             {/* Flecha Izquierda Flotante en Desktop */}
@@ -295,10 +309,10 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={0.2}
                     onDragEnd={(_e, info) => {
-                      const swipeThreshold = 30;
-                      if (info.offset.x > swipeThreshold || info.velocity.x > 180) {
+                      const swipeThreshold = 40;
+                      if (info.offset.x > swipeThreshold || info.velocity.x > 250) {
                         handlePrevPhoto();
-                      } else if (info.offset.x < -swipeThreshold || info.velocity.x < -180) {
+                      } else if (info.offset.x < -swipeThreshold || info.velocity.x < -250) {
                         handleNextPhoto();
                       }
                     }}
