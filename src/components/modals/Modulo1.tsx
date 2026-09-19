@@ -134,9 +134,14 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
             >
               <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
-            <span className="font-serif text-xs sm:text-sm md:text-base text-amber-200/90 tracking-wider font-medium uppercase">
-              Elemento {currentIndex + 1} de {items.length} {currentItem.tag ? `• ${currentItem.tag}` : ''}
-            </span>
+            <div className="flex flex-col items-center justify-center">
+              <span className="font-serif text-xs sm:text-sm md:text-base text-amber-200/90 tracking-wider font-medium uppercase leading-tight">
+                Elemento {currentIndex + 1} de {items.length} {currentItem.tag ? `• ${currentItem.tag}` : ''}
+              </span>
+              <span className="text-[10px] sm:text-xs text-amber-300/80 font-sans tracking-widest flex items-center justify-center gap-1 leading-none mt-0.5 uppercase">
+                <span className="text-amber-400/80 text-[10px]">⇄</span> Desliza
+              </span>
+            </div>
             <button
               onClick={nextSlide}
               className="md:hidden p-1.5 rounded-full bg-[#150727]/90 border border-amber-400/50 text-amber-300 hover:text-white active:scale-95 transition-all shadow-[0_0_10px_rgba(251,191,36,0.3)]"
