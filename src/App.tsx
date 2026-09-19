@@ -257,34 +257,6 @@ export const App: React.FC = () => {
                 </motion.button>
               )}
 
-              {/* 5. RECARGAR ESTRELLAS (Botón temporal para pruebas) */}
-              <motion.button
-                key="dock-reload-stars"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.92 }}
-                onClick={() => {
-                  localStorage.removeItem('luisa_collected_stars_v3');
-                  localStorage.removeItem('luisa_collected_stars_v2');
-                  localStorage.removeItem('luisa_secret_unlocked');
-                  localStorage.removeItem('luisa_intimate_sequence_v1');
-                  window.dispatchEvent(new Event('luisa_reload_stars'));
-                }}
-                className="p-2 sm:p-2 md:px-3.5 md:py-2 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif cursor-pointer bg-purple-950/90 hover:bg-amber-950/90 border-amber-400/60 text-amber-200 hover:text-white shadow-[0_0_12px_rgba(251,191,36,0.3)]"
-                title="Recargar las 3 estrellas para probarlas"
-                aria-label="Recargar estrellas"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300 shrink-0"
-                  fill="currentColor"
-                >
-                  <path d="M12 0 C12 6.5 16 10.5 24 12 C16 13.5 12 17.5 12 24 C12 17.5 8 13.5 0 12 C8 10.5 12 6.5 12 0 Z" />
-                </svg>
-                <span className="hidden md:inline font-medium">Estrellas</span>
-              </motion.button>
             </AnimatePresence>
           </div>
         );
