@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { birthdayContent } from '../../data/birthdayContent';
@@ -16,7 +16,17 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
   const [mobilePhotoIndex, setMobilePhotoIndex] = useState(0);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
+  const isNavigatingRef = useRef(false);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
   const nextSlide = useCallback(() => {
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 280);
+
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % items.length);
     setMobilePhotoIndex(0);
@@ -24,11 +34,40 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
   }, [items.length]);
 
   const prevSlide = useCallback(() => {
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 280);
+
     setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
     setMobilePhotoIndex(0);
     soundEngine.playHoverChime();
   }, [items.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
+
+    // Detectar deslizamiento horizontal claro (al menos 40px y más horizontal que vertical)
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      if (deltaX < 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
 
   // Keyboard arrow navigation
   useEffect(() => {
@@ -101,6 +140,8 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.96, opacity: 0 }}
         transition={{ type: 'spring', damping: 28, stiffness: 340 }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         style={{
           background: 'radial-gradient(ellipse at 50% 0%, #1a0833 0%, #0d031c 65%, #070110 100%)',
         }}
@@ -110,9 +151,11 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
         <div
           className="md:hidden absolute top-2 left-0 right-0 flex justify-center py-1.5 z-30 cursor-grab active:cursor-grabbing touch-none"
           onTouchStart={(e) => {
+            e.stopPropagation();
             e.currentTarget.dataset.startY = e.touches[0].clientY.toString();
           }}
           onTouchEnd={(e) => {
+            e.stopPropagation();
             const startY = parseFloat(e.currentTarget.dataset.startY || '0');
             const deltaY = e.changedTouches[0].clientY - startY;
             if (deltaY > 50) {
@@ -162,7 +205,11 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
         </div>
 
         {/* Contenedor del contenido */}
-        <div className="relative flex-1 w-full min-h-0 overflow-hidden flex items-center justify-center">
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="relative flex-1 w-full min-h-0 overflow-hidden flex items-center justify-center"
+        >
           <AnimatePresence initial={false} custom={direction} mode="wait">
             <motion.div
               key={currentItem.id}
@@ -266,7 +313,11 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
               </div>
 
               {/* MITAD DERECHA / ABAJO EN MÓVIL: TEXTO ADAPTADO A LOS MÁRGENES CON SCROLL INDEPENDIENTE */}
-              <div className="w-full md:w-1/2 flex-1 md:h-full min-h-0 flex flex-col justify-start md:justify-center px-1 sm:px-3 md:pl-6 md:pr-16 lg:pr-20 py-2 md:py-6 overflow-y-auto custom-scrollbar">
+              <div
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                className="w-full md:w-1/2 flex-1 md:h-full min-h-0 flex flex-col justify-start md:justify-center px-1 sm:px-3 md:pl-6 md:pr-16 lg:pr-20 py-2 md:py-6 overflow-y-auto custom-scrollbar touch-pan-y"
+              >
                 <div className="w-full md:my-auto pb-16 md:pb-0">
                   {currentItem.subtitle && (
                     <span className="block font-serif text-xs sm:text-sm md:text-base text-amber-300/80 uppercase tracking-[0.25em] mb-2 sm:mb-3 font-medium">
