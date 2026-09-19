@@ -71,47 +71,27 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handlePrevPhoto, handleNextPhoto, selectedPhotoIndex, showTextModal, onClose]);
 
-  // Referencias para gestos táctiles (Swipe en móvil)
-  const touchStartX = useRef<number>(0);
-  const touchStartY = useRef<number>(0);
+  // Pre-carga fluida de fotos adyacentes para que el swipe sea instantáneo y sin lag
+  useEffect(() => {
+    if (selectedPhotoIndex === null) return;
+    const nextIdx = (selectedPhotoIndex + 1) % memories.length;
+    const prevIdx = (selectedPhotoIndex - 1 + memories.length) % memories.length;
+    const imgNext = new Image();
+    imgNext.src = memories[nextIdx].image;
+    const imgPrev = new Image();
+    imgPrev.src = memories[prevIdx].image;
+  }, [selectedPhotoIndex, memories]);
+
   const mainModalTouchStartY = useRef<number>(0);
-
-  const handleViewerTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleViewerTouchEnd = (e: React.TouchEvent) => {
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-    const absX = Math.abs(deltaX);
-    const absY = Math.abs(deltaY);
-
-    // Deslizar hacia abajo -> Cerrar foto
-    if (deltaY > 55 && absY > absX * 1.1) {
-      soundEngine.playModalClose();
-      setSelectedPhotoIndex(null);
-      return;
-    }
-
-    // Deslizar horizontalmente -> Siguiente / Anterior foto
-    if (absX > 35 && absX > absY * 1.1) {
-      if (deltaX < 0) {
-        handleNextPhoto();
-      } else {
-        handlePrevPhoto();
-      }
-    }
-  };
 
   const selectedMemory = selectedPhotoIndex !== null ? memories[selectedPhotoIndex] : null;
 
   return (
     <>
       {/* ========================================================================= */}
-      {/* 1. VISTA PRINCIPAL: TODAS LAS IMÁGENES EN FILAS DE 6 EN 6 (PANTALLA COMPLETA) */}
+      {/* 1. VISTA PRINCIPAL: TODAS LAS IMÁGENES EN FILAS (PANTALLA COMPLETA)       */}
       {/* ========================================================================= */}
-      <div className="fixed inset-0 z-[100] bg-[#060112]/96 flex items-center justify-center p-1 sm:p-2 md:p-3 overflow-hidden select-none">
+      <div className="fixed inset-0 z-[100] bg-[#060112]/96 flex items-center justify-center p-0.5 sm:p-2 md:p-3 overflow-hidden select-none">
         {/* Fondo con clic para cerrar */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -121,20 +101,20 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
           className="fixed inset-0"
         />
 
-        {/* Tarjeta de la Galería Completa ocupando toda la pantalla sin backdrop-blur para scroll ultra fluido */}
+        {/* Tarjeta de la Galería Completa ocupando la pantalla optimizada para móvil */}
         <motion.div
-          initial={{ scale: 0.97, opacity: 0 }}
+          initial={{ scale: 0.98, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.97, opacity: 0 }}
+          exit={{ scale: 0.98, opacity: 0 }}
           transition={{ type: 'spring', damping: 28, stiffness: 340 }}
           style={{
             background: 'radial-gradient(ellipse at 50% 0%, #1a0833 0%, #0d031c 65%, #070110 100%)',
           }}
-          className="relative z-10 w-full h-full max-w-[99vw] max-h-[98vh] flex flex-col rounded-2xl sm:rounded-3xl p-2.5 pt-9 sm:pt-5 md:p-6 border border-amber-400/40 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden mx-auto"
+          className="relative z-10 w-full h-[100dvh] sm:h-full max-w-[100vw] sm:max-w-[99vw] max-h-[100dvh] sm:max-h-[98dvh] flex flex-col rounded-none sm:rounded-3xl p-2 pt-7 sm:pt-5 md:p-6 border-0 sm:border border-amber-400/40 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden mx-auto"
         >
           {/* Indicador de arrastrar hacia abajo para cerrar en móvil */}
           <div
-            className="md:hidden absolute top-2 left-0 right-0 flex justify-center py-1.5 z-30 cursor-grab active:cursor-grabbing touch-none"
+            className="md:hidden absolute top-1.5 left-0 right-0 flex justify-center py-1 z-30 cursor-grab active:cursor-grabbing touch-none"
             onTouchStart={(e) => {
               mainModalTouchStartY.current = e.touches[0].clientY;
             }}
@@ -149,29 +129,27 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
             <div className="w-12 h-1 rounded-full bg-amber-300/40" />
           </div>
 
-          {/* Tacha de cerrar modal arriba a la derecha (flotante fija para poder cerrar en cualquier punto del scroll) */}
+          {/* Tacha de cerrar modal arriba a la derecha */}
           <button
             onClick={onClose}
-            className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full bg-[#150727]/90 border border-amber-400/60 text-amber-300 hover:text-white hover:bg-purple-900 hover:scale-105 active:scale-95 transition-all duration-200 shadow-[0_0_15px_rgba(251,191,36,0.35)] cursor-pointer z-30"
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full bg-[#150727]/90 border border-amber-400/60 text-amber-300 hover:text-white hover:bg-purple-900 hover:scale-105 active:scale-95 transition-all duration-150 shadow-[0_0_12px_rgba(251,191,36,0.35)] cursor-pointer z-30"
             aria-label="Cerrar modal"
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
           </button>
 
-          {/* Contenedor principal con SCROLL NATURAL: contiene el encabezado y las fotos */}
+          {/* Contenedor principal con SCROLL FLUIDO NATIVO */}
           <div
             className="flex-1 overflow-y-auto px-1 py-1 pr-1.5 custom-scrollbar"
             style={{
-              willChange: 'scroll-position',
-              transform: 'translateZ(0)',
               WebkitOverflowScrolling: 'touch',
               overscrollBehavior: 'contain',
             }}
           >
-            {/* Encabezado: ahora hace scroll con las fotos, subiendo y desapareciendo al bajar */}
-            <div className="w-full pt-1 pb-2.5 sm:pb-3 mb-2 sm:mb-4 border-b border-purple-500/25 px-4 xs:px-6 sm:px-14 md:px-16 lg:px-20 flex flex-col items-center justify-center text-center">
-              <div className="w-full max-w-none md:max-w-6xl lg:max-w-7xl xl:max-w-[90rem] flex flex-col items-center justify-center text-center mx-auto">
-                <h2 className="font-serif text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-amber-200 tracking-wide text-gold-glow text-center">
+            {/* Encabezado compacto */}
+            <div className="w-full pt-0.5 pb-2 mb-2 border-b border-purple-500/25 px-4 flex flex-col items-center justify-center text-center">
+              <div className="w-full max-w-none md:max-w-6xl flex flex-col items-center justify-center text-center mx-auto">
+                <h2 className="font-serif text-base xs:text-lg sm:text-2xl md:text-3xl font-bold text-amber-200 tracking-wide text-gold-glow text-center">
                   {memoriesHeader?.title || "Álbum de Recuerdos"}
                 </h2>
 
@@ -182,7 +160,7 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
                       setShowTextModal(true);
                       soundEngine.playHoverChime();
                     }}
-                    className="mt-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-purple-950 via-[#280a4d] to-purple-950 border border-amber-400/75 text-amber-200 hover:text-white font-serif text-xs xs:text-sm font-semibold tracking-wider shadow-[0_0_15px_rgba(251,191,36,0.35)] flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+                    className="mt-1.5 px-4 py-1 rounded-full bg-gradient-to-r from-purple-950 via-[#280a4d] to-purple-950 border border-amber-400/75 text-amber-200 hover:text-white font-serif text-xs xs:text-sm font-semibold tracking-wider shadow-[0_0_12px_rgba(251,191,36,0.3)] flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
                   >
                     <BookOpen className="w-3.5 h-3.5 text-amber-300" />
                     <span>Léeme</span>
@@ -192,8 +170,8 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
               </div>
             </div>
 
-            {/* Cuadrícula con TODAS las imágenes (Filas de 6 en 6 en desktop) */}
-            <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2.5 sm:gap-3.5 md:gap-4 lg:gap-4.5 pb-6">
+            {/* Cuadrícula con TODAS las imágenes */}
+            <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3.5 md:gap-4 pb-6">
               {memories.map((memory, idx) => (
                 <div
                   key={memory.id}
@@ -202,7 +180,7 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
                     soundEngine.playObjectClick();
                   }}
                   style={{ contain: 'paint layout' }}
-                  className="group relative aspect-square rounded-2xl overflow-hidden bg-[#070112] border border-purple-500/30 hover:border-amber-400/90 shadow-sm hover:shadow-[0_0_20px_rgba(251,191,36,0.45)] cursor-pointer transform-gpu transition-transform duration-150 hover:scale-[1.03] hover:-translate-y-1 select-none"
+                  className="group relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-[#070112] border border-purple-500/30 hover:border-amber-400/90 shadow-sm hover:shadow-[0_0_18px_rgba(251,191,36,0.4)] cursor-pointer active:scale-95 transition-transform duration-150 select-none"
                 >
                   {/* Foto miniatura optimizada */}
                   <MemoryPhotoThumbnail key={memory.id} imgUrl={memory.image} title={memory.title} />
@@ -211,7 +189,7 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none" />
 
                   {/* Icono de Ver al pasar el mouse */}
-                  <div className="absolute bottom-2 right-2 z-10">
+                  <div className="absolute bottom-1.5 right-1.5 z-10">
                     <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center gap-1 font-serif text-amber-300 font-medium bg-black/75 px-1.5 py-0.5 rounded border border-amber-400/30">
                       <Maximize2 className="w-2.5 h-2.5" /> Ver
                     </span>
@@ -224,25 +202,21 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. SEGUNDO MODAL: VISOR DE LA IMAGEN SELECCIONADA EN GRANDE               */}
+      {/* 2. SEGUNDO MODAL: VISOR DE FOTO GRANDE (FLUIDO, SIN LAG)                  */}
       {/* ========================================================================= */}
       <AnimatePresence>
         {selectedPhotoIndex !== null && selectedMemory && (
-          <div
-            onTouchStart={handleViewerTouchStart}
-            onTouchEnd={handleViewerTouchEnd}
-            className="fixed inset-0 z-[120] bg-black/85 backdrop-blur-xl flex items-center justify-center p-1.5 xs:p-2 sm:p-4 md:p-6 overflow-hidden select-none"
-          >
-            {/* Clic al fondo para cerrar el visor grande y regresar a la cuadrícula de todas las fotos */}
+          <div className="fixed inset-0 z-[120] bg-black/92 md:bg-black/85 md:backdrop-blur-md flex items-center justify-center p-1 sm:p-3 md:p-6 overflow-hidden select-none">
+            {/* Clic al fondo para cerrar */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedPhotoIndex(null)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-xl"
+              className="fixed inset-0"
             />
 
-            {/* Flecha Izquierda Flotante en el Visor Grande (Solo visible en Desktop md:) */}
+            {/* Flecha Izquierda Flotante en Desktop */}
             <button
               onClick={handlePrevPhoto}
               className="hidden md:flex fixed left-4 md:left-8 top-1/2 -translate-y-1/2 z-[130] p-2.5 sm:p-3.5 rounded-full bg-[#120524]/90 hover:bg-purple-900 border border-amber-400/60 text-amber-300 hover:text-white hover:scale-110 active:scale-90 transition-all shadow-[0_0_20px_rgba(251,191,36,0.4)] cursor-pointer items-center justify-center"
@@ -252,7 +226,7 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
               <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
             </button>
 
-            {/* Flecha Derecha Flotante en el Visor Grande (Solo visible en Desktop md:) */}
+            {/* Flecha Derecha Flotante en Desktop */}
             <button
               onClick={handleNextPhoto}
               className="hidden md:flex fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-[130] p-2.5 sm:p-3.5 rounded-full bg-[#120524]/90 hover:bg-purple-900 border border-amber-400/60 text-amber-300 hover:text-white hover:scale-110 active:scale-90 transition-all shadow-[0_0_20px_rgba(251,191,36,0.4)] cursor-pointer items-center justify-center"
@@ -262,41 +236,44 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
             </button>
 
-            {/* Tarjeta del Visor de Foto Grande con Soporte de Deslizar hacia abajo */}
+            {/* Tarjeta del Visor adaptada a dvh móvil con Swipe fluido hacia abajo */}
             <motion.div
-              initial={{ scale: 0.94, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.94, opacity: 0 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 340 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 340 }}
               drag="y"
               dragConstraints={{ top: 0, bottom: 0 }}
-              dragElastic={{ top: 0.05, bottom: 0.6 }}
+              dragElastic={{ top: 0.05, bottom: 0.4 }}
               onDragEnd={(_e, info) => {
                 if (info.offset.y > 60 || info.velocity.y > 250) {
                   soundEngine.playModalClose();
                   setSelectedPhotoIndex(null);
                 }
               }}
-              className="relative z-10 w-full max-w-[98vw] sm:max-w-[92vw] md:max-w-3xl max-h-[96vh] flex flex-col items-center rounded-2xl sm:rounded-3xl glass-panel-glow p-1.5 xs:p-2 sm:p-3.5 md:p-4 border border-amber-400/50 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden mx-auto"
+              className="relative z-10 w-full max-w-[99vw] sm:max-w-[92vw] md:max-w-3xl max-h-[calc(100dvh-10px)] flex flex-col items-center rounded-2xl sm:rounded-3xl glass-panel-glow p-1.5 sm:p-3 border border-amber-400/50 shadow-[0_0_40px_rgba(0,0,0,0.95)] overflow-hidden mx-auto"
             >
               {/* Barra de agarre para deslizar hacia abajo en móvil */}
-              <div className="w-12 h-1 rounded-full bg-amber-300/40 mx-auto -mt-0.5 mb-1.5 md:hidden" />
+              <div
+                onClick={() => setSelectedPhotoIndex(null)}
+                className="w-12 h-1 rounded-full bg-amber-300/40 mx-auto -mt-0.5 mb-1.5 md:hidden cursor-pointer"
+              />
 
-              {/* Barra superior con contador a la izquierda y Tacha a la derecha */}
-              <div className="w-full flex items-center justify-between pb-1.5 mb-1.5 border-b border-purple-500/25 px-1.5 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-serif text-[11px] xs:text-xs sm:text-sm text-amber-200/95 tracking-wider font-semibold uppercase">
-                    Elemento {selectedPhotoIndex + 1} de {memories.length}
+              {/* Barra superior compacta */}
+              <div className="w-full flex items-center justify-between pb-1 mb-1 border-b border-purple-500/25 px-1.5 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-serif text-[11px] sm:text-xs text-amber-200/95 tracking-wider font-semibold uppercase">
+                    Foto {selectedPhotoIndex + 1} de {memories.length}
                   </span>
                   <span className="md:hidden text-[10px] text-amber-300/60 font-serif italic">
-                    • desliza para navegar o cerrar
+                    • desliza
                   </span>
                 </div>
 
-                {/* Tacha que cierra la foto grande y regresa a la cuadrícula de fotos */}
+                {/* Tacha para cerrar */}
                 <button
                   onClick={() => setSelectedPhotoIndex(null)}
-                  className="p-1 sm:p-1.5 rounded-full bg-[#150727]/90 border border-amber-400/60 text-amber-300 hover:text-white hover:bg-purple-900 hover:scale-105 active:scale-95 transition-all duration-200 shadow-[0_0_15px_rgba(251,191,36,0.35)] cursor-pointer"
+                  className="p-1 sm:p-1.5 rounded-full bg-[#150727]/90 border border-amber-400/60 text-amber-300 hover:text-white hover:bg-purple-900 active:scale-95 transition-all shadow-[0_0_10px_rgba(251,191,36,0.3)] cursor-pointer"
                   aria-label="Cerrar visor"
                   title="Volver"
                 >
@@ -304,31 +281,31 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
                 </button>
               </div>
 
-              {/* Contenedor de la foto ampliada con swipe táctil en móvil */}
+              {/* Contenedor con Swipe instantáneo en móvil (popLayout sin retraso) */}
               <div className="relative flex items-center justify-center rounded-xl sm:rounded-2xl overflow-hidden w-full flex-1 min-h-0">
-                <AnimatePresence initial={false} custom={direction} mode="wait">
+                <AnimatePresence initial={false} custom={direction} mode="popLayout">
                   <motion.div
                     key={selectedMemory.id}
                     custom={direction}
-                    initial={{ opacity: 0, x: direction * 50 }}
+                    initial={{ opacity: 0, x: direction * 40 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -direction * 50 }}
-                    transition={{ duration: 0.22, ease: "easeInOut" }}
+                    exit={{ opacity: 0, x: -direction * 40 }}
+                    transition={{ duration: 0.16, ease: "easeOut" }}
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.25}
+                    dragElastic={0.2}
                     onDragEnd={(_e, info) => {
-                      const swipeThreshold = 35;
-                      if (info.offset.x > swipeThreshold || info.velocity.x > 200) {
+                      const swipeThreshold = 30;
+                      if (info.offset.x > swipeThreshold || info.velocity.x > 180) {
                         handlePrevPhoto();
-                      } else if (info.offset.x < -swipeThreshold || info.velocity.x < -200) {
+                      } else if (info.offset.x < -swipeThreshold || info.velocity.x < -180) {
                         handleNextPhoto();
                       }
                     }}
                     className="w-full flex flex-col items-center justify-center cursor-grab active:cursor-grabbing select-none"
                   >
-                    {/* Imagen ampliada a máxima resolución original */}
-                    <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-[#070110] border border-purple-500/30 shadow-2xl flex items-center justify-center">
+                    {/* Imagen ampliada */}
+                    <div className="relative rounded-xl overflow-hidden bg-[#070110] border border-purple-500/30 shadow-2xl flex items-center justify-center">
                       <MemoryPhotoLarge
                         imgUrl={selectedMemory.image}
                         title={selectedMemory.title}
@@ -336,24 +313,20 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
                       />
                     </div>
 
-                    {/* Texto o descripción debajo de la foto */}
+                    {/* Descripción debajo de la foto */}
                     {(selectedMemory.title || selectedMemory.text) && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="w-full max-w-md sm:max-w-xl mt-1.5 sm:mt-2 px-3 py-1.5 sm:py-2.5 rounded-xl bg-[#120524]/95 border border-amber-400/45 text-center shadow-lg backdrop-blur-md shrink-0"
-                      >
+                      <div className="w-full max-w-sm xs:max-w-md sm:max-w-xl mt-1.5 px-3 py-1.5 sm:py-2 rounded-xl bg-[#120524]/95 border border-amber-400/40 text-center shadow-lg shrink-0">
                         {selectedMemory.title && (
-                          <h3 className="font-serif text-xs sm:text-sm md:text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-yellow-200 to-amber-300 text-gold-glow mb-0.5 tracking-wide">
+                          <h3 className="font-serif text-[11px] sm:text-xs md:text-sm font-bold text-amber-200 mb-0.5 tracking-wide">
                             {selectedMemory.title}
                           </h3>
                         )}
                         {selectedMemory.text && (
-                          <p className="font-serif text-xs xs:text-sm sm:text-base leading-snug sm:leading-relaxed text-amber-100/95 font-medium text-center">
+                          <p className="font-serif text-xs xs:text-[13px] sm:text-sm leading-snug sm:leading-relaxed text-amber-100/95 font-medium text-center">
                             {selectedMemory.text}
                           </p>
                         )}
-                      </motion.div>
+                      </div>
                     )}
                   </motion.div>
                 </AnimatePresence>
@@ -504,10 +477,10 @@ const MemoryPhotoLarge: React.FC<{ imgUrl: string; title?: string; hasText?: boo
       alt={title || "Elemento"}
       onError={() => setError(true)}
       decoding="async"
-      className={`w-auto max-w-[96vw] sm:max-w-[88vw] md:max-w-[80vw] object-contain rounded-xl sm:rounded-2xl filter contrast-105 brightness-105 pointer-events-none transition-all duration-200 ${
+      className={`w-auto max-w-[95vw] sm:max-w-[88vw] md:max-w-[80vw] object-contain rounded-xl sm:rounded-2xl filter contrast-[1.03] brightness-[1.02] pointer-events-none transition-all duration-150 ${
         hasText
-          ? 'max-h-[66vh] xs:max-h-[70vh] sm:max-h-[73vh] md:max-h-[76vh]'
-          : 'max-h-[80vh] sm:max-h-[84vh] md:max-h-[86vh]'
+          ? 'max-h-[48dvh] xs:max-h-[52dvh] sm:max-h-[64dvh] md:max-h-[72dvh]'
+          : 'max-h-[68dvh] xs:max-h-[72dvh] sm:max-h-[78dvh] md:max-h-[82dvh]'
       }`}
     />
   );

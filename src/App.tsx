@@ -146,7 +146,7 @@ export const App: React.FC = () => {
         const showVolume = true;
 
         return (
-          <div className="fixed top-2.5 left-2.5 sm:top-4 sm:left-4 md:top-6 md:left-6 z-[120] flex items-center gap-1 sm:gap-2 bg-[#0d031e]/90 backdrop-blur-md p-1 sm:p-1.5 rounded-full border border-purple-500/40 shadow-[0_4px_25px_rgba(0,0,0,0.85)]">
+          <div className={`fixed top-2 left-2 sm:top-3 sm:left-3 md:top-5 md:left-5 z-[110] items-center gap-1 sm:gap-1.5 bg-[#0d031e]/90 backdrop-blur-md p-1 sm:p-1.5 rounded-full border border-purple-500/40 shadow-[0_4px_20px_rgba(0,0,0,0.85)] ${activeModal ? 'hidden md:flex' : 'flex'}`}>
             <AnimatePresence mode="popLayout">
               {/* 1. REGRESAR AL REGALO */}
               {showGift && (
@@ -155,13 +155,13 @@ export const App: React.FC = () => {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.92 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     setActiveModal(null);
                     handleResetExperience();
                   }}
-                  className="p-2 sm:p-2 md:px-3.5 md:py-2 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif bg-purple-950/90 hover:bg-purple-900 border-amber-400/60 text-amber-200 hover:text-white shadow-[0_0_12px_rgba(251,191,36,0.25)] cursor-pointer"
+                  className="p-1.5 sm:p-2 md:px-3.5 md:py-1.5 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif bg-purple-950/90 hover:bg-purple-900 border-amber-400/60 text-amber-200 hover:text-white shadow-[0_0_10px_rgba(251,191,36,0.2)] cursor-pointer"
                   title="Regresar a abrir el regalo"
                   aria-label="Regresar al regalo"
                 >
@@ -177,18 +177,18 @@ export const App: React.FC = () => {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ scale: phase !== 'pantalla_cumple' || Boolean(activeModal) ? 1.08 : 1 }}
-                  whileTap={{ scale: phase !== 'pantalla_cumple' || Boolean(activeModal) ? 0.92 : 1 }}
+                  whileHover={{ scale: phase !== 'pantalla_cumple' || Boolean(activeModal) ? 1.05 : 1 }}
+                  whileTap={{ scale: phase !== 'pantalla_cumple' || Boolean(activeModal) ? 0.95 : 1 }}
                   onClick={() => {
                     if (phase !== 'pantalla_cumple' || activeModal) {
                       setActiveModal(null);
                       setPhase('pantalla_cumple');
                     }
                   }}
-                  className={`p-2 sm:p-2 md:px-3.5 md:py-2 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif ${
+                  className={`p-1.5 sm:p-2 md:px-3.5 md:py-1.5 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif ${
                     phase === 'pantalla_cumple' && !activeModal
-                      ? 'bg-pink-900/60 border-pink-400/80 text-pink-200 shadow-[0_0_12px_rgba(244,63,94,0.35)] cursor-default'
-                      : 'bg-purple-950/90 hover:bg-pink-950/90 border-pink-400/60 text-pink-200 hover:text-white shadow-[0_0_12px_rgba(244,63,94,0.2)] cursor-pointer'
+                      ? 'bg-pink-900/60 border-pink-400/80 text-pink-200 shadow-[0_0_10px_rgba(244,63,94,0.3)] cursor-default'
+                      : 'bg-purple-950/90 hover:bg-pink-950/90 border-pink-400/60 text-pink-200 hover:text-white shadow-[0_0_10px_rgba(244,63,94,0.2)] cursor-pointer'
                   }`}
                   title="Ver felicitación de cumpleaños"
                   aria-label="Ver felicitación de cumpleaños"
@@ -205,15 +205,15 @@ export const App: React.FC = () => {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.92 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     setActiveModal(null);
                     if (phase !== 'pantalla2') {
                       setPhase('pantalla2');
                     }
                   }}
-                  className="p-2 sm:p-2 md:px-3.5 md:py-2 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif bg-purple-950/90 hover:bg-violet-900 border-amber-400/60 text-amber-200 hover:text-white shadow-[0_0_12px_rgba(251,191,36,0.25)] cursor-pointer"
+                  className="p-1.5 sm:p-2 md:px-3.5 md:py-1.5 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif bg-purple-950/90 hover:bg-violet-900 border-amber-400/60 text-amber-200 hover:text-white shadow-[0_0_10px_rgba(251,191,36,0.2)] cursor-pointer"
                   title="Ir al inicio (4 módulos)"
                   aria-label="Ir al inicio (4 módulos)"
                 >
@@ -237,13 +237,13 @@ export const App: React.FC = () => {
               {showVolume && (
                 <motion.button
                   key="dock-volume"
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.92 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={toggleMute}
-                  className={`p-2 sm:p-2 md:px-3.5 md:py-2 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif cursor-pointer ${
+                  className={`p-1.5 sm:p-2 md:px-3.5 md:py-1.5 rounded-full border transition-all flex items-center gap-1.5 text-xs sm:text-sm font-serif cursor-pointer ${
                     isMuted
-                      ? 'bg-red-950/90 hover:bg-red-900/90 border-red-400/60 text-red-200 hover:text-white shadow-[0_0_12px_rgba(239,68,68,0.3)]'
-                      : 'bg-purple-950/90 hover:bg-purple-900/90 border-purple-400/60 text-purple-200 hover:text-white shadow-[0_0_12px_rgba(168,85,247,0.3)]'
+                      ? 'bg-red-950/90 hover:bg-red-900/90 border-red-400/60 text-red-200 hover:text-white shadow-[0_0_10px_rgba(239,68,68,0.25)]'
+                      : 'bg-purple-950/90 hover:bg-purple-900/90 border-purple-400/60 text-purple-200 hover:text-white shadow-[0_0_10px_rgba(168,85,247,0.25)]'
                   }`}
                   title={isMuted ? "Activar música" : "Silenciar música"}
                   aria-label={isMuted ? "Activar música" : "Silenciar música"}
@@ -256,9 +256,9 @@ export const App: React.FC = () => {
                   <span className="hidden md:inline font-medium">{isMuted ? "Mudo" : "Música"}</span>
                 </motion.button>
               )}
-
             </AnimatePresence>
           </div>
+
         );
       })()}
 

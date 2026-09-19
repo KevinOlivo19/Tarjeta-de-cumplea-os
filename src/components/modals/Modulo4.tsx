@@ -25,14 +25,14 @@ export const Modulo4: React.FC<Modulo4Props> = ({ onClose }) => {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 pt-14 sm:pt-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 pt-4 sm:pt-6 overflow-y-auto">
       {/* Dark backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/90 backdrop-blur-md"
+        className="fixed inset-0 bg-black/90 md:backdrop-blur-md"
       />
 
       {/* Main Modal Card */}
@@ -50,7 +50,7 @@ export const Modulo4: React.FC<Modulo4Props> = ({ onClose }) => {
             onClose();
           }
         }}
-        className="relative z-10 w-full max-w-xl rounded-3xl glass-panel-glow p-3.5 xs:p-5 sm:p-8 text-purple-100 shadow-[0_25px_60px_rgba(0,0,0,0.95)] max-h-[92vh] overflow-y-auto my-auto border border-amber-400/40"
+        className="relative z-10 w-full max-w-xl rounded-3xl glass-panel-glow p-3.5 xs:p-5 sm:p-8 text-purple-100 shadow-[0_25px_60px_rgba(0,0,0,0.95)] max-h-[94dvh] overflow-y-auto my-auto border border-amber-400/40"
       >
         {/* Barra de agarre para deslizar en móvil */}
         <div className="w-10 h-1 rounded-full bg-amber-300/40 mx-auto -mt-1 mb-2.5 md:hidden" />

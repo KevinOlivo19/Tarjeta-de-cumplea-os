@@ -23,14 +23,14 @@ export const Modulo2: React.FC<Modulo2Props> = ({ onClose }) => {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 pt-14 sm:pt-5 md:p-6 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 pt-4 sm:pt-5 md:p-6 overflow-hidden">
       {/* Dark backdrop with blur */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/85 backdrop-blur-md"
+        className="fixed inset-0 bg-black/85 md:backdrop-blur-md"
       />
 
       {/* Parchment Letter Container */}
@@ -39,7 +39,7 @@ export const Modulo2: React.FC<Modulo2Props> = ({ onClose }) => {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.92, opacity: 0, y: 15 }}
         transition={{ type: 'spring', damping: 26, stiffness: 300 }}
-        className="relative z-10 w-full max-w-[96vw] sm:max-w-[92vw] md:max-w-4xl lg:max-w-5xl max-h-[92vh] flex flex-col rounded-2xl sm:rounded-3xl border-2 border-[#b89363]/85 overflow-hidden mx-auto select-text"
+        className="relative z-10 w-full max-w-[98vw] sm:max-w-[92vw] md:max-w-4xl lg:max-w-5xl max-h-[94dvh] flex flex-col rounded-2xl sm:rounded-3xl border-2 border-[#b89363]/85 overflow-hidden mx-auto select-text"
         style={{
           background: 'radial-gradient(ellipse at center 20%, #fffef9 0%, #faefd7 35%, #f1dcba 70%, #dfbf8e 100%)',
           boxShadow: 'inset 0 0 50px rgba(139, 87, 36, 0.3), inset 0 0 100px rgba(90, 50, 15, 0.16), 0 25px 70px rgba(0, 0, 0, 0.95), 0 0 35px rgba(212, 160, 96, 0.3)',

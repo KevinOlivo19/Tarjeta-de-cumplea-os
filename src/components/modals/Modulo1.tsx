@@ -72,7 +72,7 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/90 backdrop-blur-xl"
+        className="fixed inset-0 bg-black/90 md:backdrop-blur-md"
       />
 
       {/* Flecha Izquierda Flotante (Solo en Desktop md:) */}
@@ -104,7 +104,7 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
         style={{
           background: 'radial-gradient(ellipse at 50% 0%, #1a0833 0%, #0d031c 65%, #070110 100%)',
         }}
-        className="relative z-10 w-full h-full max-w-[99vw] max-h-[98vh] flex flex-col rounded-2xl sm:rounded-3xl p-2.5 pt-9 sm:pt-5 md:p-6 border border-amber-400/40 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden mx-auto"
+        className="relative z-10 w-full h-[100dvh] sm:h-full max-w-[100vw] sm:max-w-[99vw] max-h-[100dvh] sm:max-h-[98dvh] flex flex-col rounded-none sm:rounded-3xl p-2 pt-7 sm:pt-5 md:p-6 border-0 sm:border border-amber-400/40 shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden mx-auto"
       >
         {/* Barra de agarre para deslizar hacia abajo en móvil */}
         <div
