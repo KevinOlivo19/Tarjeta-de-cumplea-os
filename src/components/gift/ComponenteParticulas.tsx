@@ -13,20 +13,17 @@ interface BurstParticle {
 
 const COLORS = ['#fde047', '#c084fc', '#e879f9', '#ffffff', '#a855f7', '#fbbf24'];
 
-const BURST_PARTICLES: BurstParticle[] = Array.from({ length: 60 }, (_, i) => {
-  const angle = (i / 60) * Math.PI * 2 + ((i * 17) % 30) * (Math.PI / 180);
-  const p1 = ((i * 37) % 100) / 100;
-  const p2 = ((i * 53) % 100) / 100;
-  const p3 = ((i * 79) % 100) / 100;
-  const distance = p1 * 260 + 60;
+const BURST_PARTICLES: BurstParticle[] = Array.from({ length: 18 }, (_, i) => {
+  const angle = (i / 18) * Math.PI * 2;
+  const distance = 90 + (i % 3) * 30;
   return {
     id: i,
     x: Math.cos(angle) * distance,
-    y: Math.sin(angle) * distance - p2 * 50,
-    scale: p3 * 1.5 + 0.5,
+    y: Math.sin(angle) * distance - 20,
+    scale: 0.8 + (i % 3) * 0.25,
     color: COLORS[i % COLORS.length],
-    duration: p1 * 1.2 + 0.8,
-    delay: p2 * 0.2,
+    duration: 0.65 + (i % 3) * 0.1,
+    delay: (i % 3) * 0.03,
   };
 });
 
@@ -50,8 +47,8 @@ export const ComponenteParticulas: React.FC<{ active: boolean }> = ({ active }) 
             delay: p.delay,
             ease: [0.16, 1, 0.3, 1],
           }}
-          className="absolute w-2 h-2 rounded-full shadow-[0_0_8px_currentColor]"
-          style={{ backgroundColor: p.color, color: p.color }}
+          className="absolute w-2 h-2 rounded-full"
+          style={{ backgroundColor: p.color }}
         />
       ))}
     </div>

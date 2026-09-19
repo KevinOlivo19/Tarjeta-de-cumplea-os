@@ -36,7 +36,7 @@ export const Pantalla1: React.FC<Pantalla1Props> = ({ onOpen, onStepChange }) =>
 
       setTimeout(() => {
         onOpen();
-      }, 1600);
+      }, 820);
     }
   };
 
@@ -52,20 +52,20 @@ export const Pantalla1: React.FC<Pantalla1Props> = ({ onOpen, onStepChange }) =>
       {/* Ambient Aura */}
       <motion.div
         animate={{
-          scale: clickCount === 0 ? 1 : clickCount === 1 ? 1.4 : clickCount === 2 ? 1.9 : 2.8,
-          opacity: clickCount === 0 ? 0.4 : clickCount === 1 ? 0.65 : clickCount === 2 ? 0.85 : 1,
+          scale: clickCount === 0 ? 1 : clickCount === 1 ? 1.15 : clickCount === 2 ? 1.3 : 1.5,
+          opacity: clickCount === 0 ? 0.35 : clickCount === 1 ? 0.5 : clickCount === 2 ? 0.65 : 0.85,
         }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="absolute w-[32rem] h-[32rem] rounded-full bg-gradient-to-r from-purple-600/35 via-amber-500/25 to-rose-600/35 blur-3xl pointer-events-none"
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="absolute w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full bg-gradient-to-r from-purple-600/30 via-amber-500/20 to-rose-600/30 blur-2xl pointer-events-none transform-gpu will-change-transform"
       />
 
       {/* Shockwave */}
-      {clickCount >= 2 && (
+      {clickCount >= 2 && !isOpening && (
         <motion.div
           initial={{ scale: 0.8, opacity: 0.9 }}
-          animate={{ scale: [1, 2.2], opacity: [0.8, 0] }}
+          animate={{ scale: [1, 2], opacity: [0.8, 0] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
-          className="absolute w-96 h-96 rounded-full border-2 border-amber-300/70 pointer-events-none"
+          className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full border border-amber-300/60 pointer-events-none transform-gpu"
         />
       )}
 
@@ -77,42 +77,42 @@ export const Pantalla1: React.FC<Pantalla1Props> = ({ onOpen, onStepChange }) =>
         onClick={handleClick}
         animate={
           isOpening
-            ? { scale: [1.15, 1.35, 0], opacity: [1, 1, 0] }
+            ? { scale: [1, 1.05, 0.92], opacity: [1, 1, 0] }
             : isVibrating
               ? {
-                x: [-6, 7, -7, 6, -5, 5, 0],
-                y: [-3, 4, -4, 3, -2, 2, 0],
-                scale: 1.12,
+                x: [-4, 5, -5, 4, -3, 3, 0],
+                y: [-2, 3, -3, 2, -1, 1, 0],
+                scale: 1.08,
               }
               : {
-                scale: clickCount === 0 ? 1 : clickCount === 1 ? 1.06 : 1.12,
-                y: clickCount === 0 ? [-6, 6, -6] : [-3, 3, -3],
+                scale: clickCount === 0 ? 1 : clickCount === 1 ? 1.05 : 1.08,
+                y: clickCount === 0 ? [-5, 5, -5] : [-2, 2, -2],
               }
         }
         transition={
           isOpening
-            ? { duration: 1.4, ease: 'easeInOut' }
+            ? { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
             : isVibrating
-              ? { duration: 0.8, repeat: 1 }
+              ? { duration: 0.6 }
               : {
-                y: { repeat: Infinity, duration: 4.5, ease: 'easeInOut' },
-                scale: { duration: 0.4 },
+                y: { repeat: Infinity, duration: 4, ease: 'easeInOut' },
+                scale: { duration: 0.3 },
               }
         }
-        whileHover={{ scale: clickCount === 0 ? 1.04 : clickCount === 1 ? 1.09 : 1.15 }}
-        whileTap={{ scale: 0.96 }}
-        className="relative cursor-pointer group p-3 xs:p-6 sm:p-10 flex flex-col items-center"
+        whileHover={{ scale: clickCount === 0 ? 1.03 : clickCount === 1 ? 1.06 : 1.1 }}
+        whileTap={{ scale: 0.97 }}
+        className="relative cursor-pointer group p-3 xs:p-6 sm:p-10 flex flex-col items-center transform-gpu"
         role="button"
         tabIndex={0}
         aria-label="Abrir regalo interactivo"
       >
         {/* Glow halo */}
         <div
-          className={`absolute inset-4 rounded-3xl transition-all duration-700 blur-3xl ${clickCount === 0
-            ? 'bg-purple-600/25 group-hover:bg-purple-500/40'
+          className={`absolute inset-4 rounded-3xl transition-all duration-500 blur-xl ${clickCount === 0
+            ? 'bg-purple-600/20 group-hover:bg-purple-500/30'
             : clickCount === 1
-              ? 'bg-amber-500/35 shadow-[0_0_80px_rgba(245,158,11,0.5)]'
-              : 'bg-gradient-to-r from-rose-500/50 to-amber-500/50 shadow-[0_0_120px_rgba(245,158,11,0.7)]'
+              ? 'bg-amber-500/30 shadow-[0_0_30px_rgba(245,158,11,0.35)]'
+              : 'bg-gradient-to-r from-rose-500/40 to-amber-500/40 shadow-[0_0_40px_rgba(245,158,11,0.45)]'
             }`}
         />
 
@@ -121,17 +121,17 @@ export const Pantalla1: React.FC<Pantalla1Props> = ({ onOpen, onStepChange }) =>
           <motion.div
             animate={
               isOpening
-                ? { y: -380, rotate: -45, opacity: 0 }
+                ? { y: -180, rotate: -20, opacity: 0 }
                 : clickCount === 2
-                  ? { rotate: [-5, 5, -5] }
+                  ? { rotate: [-4, 4, -4] }
                   : { y: [0, -3, 0] }
             }
             transition={
               isOpening
-                ? { duration: 1.1, ease: [0.1, 0.9, 0.2, 1] }
+                ? { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
                 : { repeat: Infinity, duration: 2.5, ease: 'easeInOut' }
             }
-            className="absolute -top-10 xs:-top-12 sm:-top-16 md:-top-20 z-40 w-36 xs:w-44 sm:w-56 md:w-64 h-auto pointer-events-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)]"
+            className="absolute -top-10 xs:-top-12 sm:-top-16 md:-top-20 z-40 w-36 xs:w-44 sm:w-56 md:w-64 h-auto pointer-events-none drop-shadow-md transform-gpu"
           >
             <svg viewBox="0 0 200 120" className="w-full h-auto overflow-visible">
               <defs>
@@ -202,21 +202,21 @@ export const Pantalla1: React.FC<Pantalla1Props> = ({ onOpen, onStepChange }) =>
             animate={
               isOpening
                 ? {
-                  y: -360,
-                  rotate: -35,
+                  y: -160,
+                  rotate: -16,
                   opacity: 0,
-                  scale: 1.25,
+                  scale: 1.05,
                 }
                 : clickCount === 2
-                  ? { y: [-3, 3, -3] }
+                  ? { y: [-2, 2, -2] }
                   : {}
             }
             transition={
               isOpening
-                ? { duration: 1.1, ease: [0.1, 0.9, 0.2, 1] }
-                : { duration: 0.2, repeat: Infinity }
+                ? { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+                : { duration: 0.25, repeat: Infinity }
             }
-            className="absolute top-8 xs:top-10 sm:top-12 md:top-14 z-30 w-60 xs:w-72 sm:w-88 md:w-[26rem] h-13 xs:h-16 sm:h-20 md:h-24 rounded-2xl bg-gradient-to-b from-[#831843] via-[#701a75] to-[#4a044e] border-2 border-amber-300/80 shadow-[0_16px_30px_rgba(0,0,0,0.85)] flex items-center justify-center overflow-hidden"
+            className="absolute top-8 xs:top-10 sm:top-12 md:top-14 z-30 w-60 xs:w-72 sm:w-88 md:w-[26rem] h-13 xs:h-16 sm:h-20 md:h-24 rounded-2xl bg-gradient-to-b from-[#831843] via-[#701a75] to-[#4a044e] border-2 border-amber-300/80 shadow-[0_12px_24px_rgba(0,0,0,0.7)] flex items-center justify-center overflow-hidden transform-gpu"
           >
             <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent pointer-events-none" />
             <div className="absolute inset-y-0 w-11 xs:w-14 sm:w-16 md:w-20 bg-gradient-to-r from-[#92400e] via-[#fef08a] via-50% to-[#92400e] shadow-[0_0_15px_rgba(245,158,11,0.6)] flex items-center justify-center">
@@ -243,7 +243,7 @@ export const Pantalla1: React.FC<Pantalla1Props> = ({ onOpen, onStepChange }) =>
               <div className="h-1 w-full bg-white/40" />
             </div>
 
-            {clickCount >= 2 && (
+            {clickCount >= 2 && !isOpening && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0.4, 0.9, 0.4] }}
