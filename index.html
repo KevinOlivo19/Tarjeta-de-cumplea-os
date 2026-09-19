@@ -12,6 +12,49 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Ocultar automáticamente badges e insignias externas de Netlify -->
+    <style>
+      [data-netlify-badge],
+      [data-netlify-deploy-preview-badge],
+      iframe[src*="netlify"],
+      div[id*="netlify"],
+      div[class*="netlify-badge"],
+      netlify-badge,
+      #netlify-badge {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        position: absolute !important;
+        z-index: -9999 !important;
+      }
+    </style>
+    <script>
+      (function() {
+        function removeBadge() {
+          const els = document.querySelectorAll('iframe, netlify-badge, div, a');
+          for (let i = 0; i < els.length; i++) {
+            const el = els[i];
+            const str = ((el.id || '') + ' ' + (el.className || '') + ' ' + (el.getAttribute('src') || '') + ' ' + (el.getAttribute('href') || '')).toLowerCase();
+            if (str.includes('netlify-badge') || str.includes('powered-by-netlify') || (el.tagName === 'IFRAME' && str.includes('netlify'))) {
+              el.style.display = 'none';
+              try { el.remove(); } catch (_) {}
+            }
+          }
+        }
+        if (typeof window !== 'undefined') {
+          window.addEventListener('DOMContentLoaded', removeBadge);
+          window.addEventListener('load', removeBadge);
+          try {
+            const obs = new MutationObserver(removeBadge);
+            obs.observe(document.documentElement, { childList: true, subtree: true });
+          } catch (_) {}
+        }
+      })();
+    </script>
   </head>
   <body class="bg-[#030107] text-[#f4effa] overflow-x-hidden antialiased selection:bg-purple-900 selection:text-purple-100">
     <div id="root"></div>
