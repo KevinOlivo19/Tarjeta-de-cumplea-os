@@ -51,11 +51,13 @@ export const FondoCanvas: React.FC<FondoCanvasProps> = ({ isPaused = false }) =>
     let animationFrameId: number;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
+    let isMobile = width < 768;
 
     const handleResize = () => {
       if (!canvas) return;
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
+      isMobile = width < 768;
       initStars();
     };
 
@@ -70,15 +72,15 @@ export const FondoCanvas: React.FC<FondoCanvasProps> = ({ isPaused = false }) =>
 
     const initStars = () => {
       stars = [];
-      const starCount = Math.floor((width * height) / 4500);
+      const starCount = isMobile ? 25 : Math.floor((width * height) / 5000);
       for (let i = 0; i < starCount; i++) {
         stars.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          size: Math.random() * 1.8 + 0.5,
+          size: Math.random() * 1.5 + 0.5,
           baseAlpha: Math.random() * 0.7 + 0.3,
           alpha: Math.random(),
-          twinkleSpeed: Math.random() * 0.03 + 0.008,
+          twinkleSpeed: Math.random() * 0.02 + 0.008,
           color: starColors[Math.floor(Math.random() * starColors.length)],
         });
       }
@@ -86,26 +88,27 @@ export const FondoCanvas: React.FC<FondoCanvasProps> = ({ isPaused = false }) =>
 
     initStars();
 
-    const particleCount = 45;
+    const particleCount = isMobile ? 8 : 30;
     for (let i = 0; i < particleCount; i++) {
-      const isPetal = i % 3 === 0;
+      const isPetal = !isMobile && i % 3 === 0;
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        size: isPetal ? Math.random() * 6 + 3 : Math.random() * 2 + 1,
-        vx: (Math.random() - 0.5) * 0.4 + 0.15,
-        vy: Math.random() * 0.4 + 0.2,
-        alpha: Math.random() * 0.6 + 0.2,
+        size: isPetal ? Math.random() * 5 + 2 : Math.random() * 2 + 1,
+        vx: (Math.random() - 0.5) * 0.3 + 0.1,
+        vy: Math.random() * 0.3 + 0.15,
+        alpha: Math.random() * 0.5 + 0.2,
         rotation: Math.random() * Math.PI * 2,
-        vRot: (Math.random() - 0.5) * 0.02,
+        vRot: (Math.random() - 0.5) * 0.015,
         type: isPetal ? 'petal' : 'dust',
         color: isPetal
           ? petalColors[Math.floor(Math.random() * petalColors.length)]
-          : 'rgba(216, 180, 254, 0.5)',
+          : 'rgba(216, 180, 254, 0.4)',
       });
     }
 
     const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+      if (isMobile) return; // Desactivar ondas en móvil para máxima fluidez
       let clientX = 0;
       let clientY = 0;
       if ('touches' in e && e.touches.length > 0) {
@@ -116,18 +119,17 @@ export const FondoCanvas: React.FC<FondoCanvasProps> = ({ isPaused = false }) =>
         clientY = e.clientY;
       }
 
-      if (Math.random() > 0.65) {
+      if (Math.random() > 0.7) {
         ripples.push({
           x: clientX,
           y: clientY,
           radius: 2,
-          alpha: 0.6,
+          alpha: 0.5,
         });
       }
     };
 
     window.addEventListener('mousemove', handlePointerMove, { passive: true });
-    window.addEventListener('touchmove', handlePointerMove, { passive: true });
 
     let time = 0;
 
@@ -139,24 +141,19 @@ export const FondoCanvas: React.FC<FondoCanvasProps> = ({ isPaused = false }) =>
       time += 0.01;
       ctx.clearRect(0, 0, width, height);
 
-      const nebula1X = width * 0.25 + Math.sin(time * 0.5) * 40;
-      const nebula1Y = height * 0.35 + Math.cos(time * 0.4) * 30;
-      const grad1 = ctx.createRadialGradient(nebula1X, nebula1Y, 10, nebula1X, nebula1Y, width * 0.45);
-      grad1.addColorStop(0, 'rgba(76, 29, 149, 0.22)');
-      grad1.addColorStop(0.5, 'rgba(44, 20, 84, 0.12)');
-      grad1.addColorStop(1, 'rgba(3, 1, 7, 0)');
-      ctx.fillStyle = grad1;
-      ctx.fillRect(0, 0, width, height);
+      // En desktop renderizamos las nebulosas dinámicas, en móvil se omiten para ahorrar GPU
+      if (!isMobile) {
+        const nebula1X = width * 0.25 + Math.sin(time * 0.5) * 30;
+        const nebula1Y = height * 0.35 + Math.cos(time * 0.4) * 20;
+        const grad1 = ctx.createRadialGradient(nebula1X, nebula1Y, 10, nebula1X, nebula1Y, width * 0.4);
+        grad1.addColorStop(0, 'rgba(76, 29, 149, 0.18)');
+        grad1.addColorStop(0.5, 'rgba(44, 20, 84, 0.08)');
+        grad1.addColorStop(1, 'rgba(3, 1, 7, 0)');
+        ctx.fillStyle = grad1;
+        ctx.fillRect(0, 0, width, height);
+      }
 
-      const nebula2X = width * 0.75 + Math.cos(time * 0.3) * 50;
-      const nebula2Y = height * 0.65 + Math.sin(time * 0.5) * 40;
-      const grad2 = ctx.createRadialGradient(nebula2X, nebula2Y, 10, nebula2X, nebula2Y, width * 0.4);
-      grad2.addColorStop(0, 'rgba(109, 40, 217, 0.18)');
-      grad2.addColorStop(0.6, 'rgba(59, 7, 100, 0.08)');
-      grad2.addColorStop(1, 'rgba(3, 1, 7, 0)');
-      ctx.fillStyle = grad2;
-      ctx.fillRect(0, 0, width, height);
-
+      // Estrellas
       for (let i = 0; i < stars.length; i++) {
         const star = stars[i];
         star.alpha += star.twinkleSpeed;
@@ -166,17 +163,14 @@ export const FondoCanvas: React.FC<FondoCanvasProps> = ({ isPaused = false }) =>
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx.fillStyle = star.color;
         ctx.globalAlpha = currentAlpha;
-        ctx.shadowBlur = star.size > 1.2 ? 6 : 0;
-        ctx.shadowColor = star.color;
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
 
+      // Partículas
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        p.x += p.vx + Math.sin(time + i) * 0.3;
+        p.x += p.vx + Math.sin(time + i) * 0.2;
         p.y += p.vy;
-        p.rotation += p.vRot;
 
         if (p.y > height + 20) {
           p.y = -20;
@@ -185,39 +179,31 @@ export const FondoCanvas: React.FC<FondoCanvasProps> = ({ isPaused = false }) =>
         if (p.x > width + 20) p.x = -20;
         if (p.x < -20) p.x = width + 20;
 
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
         ctx.globalAlpha = p.alpha;
         ctx.fillStyle = p.color;
-
-        if (p.type === 'petal') {
-          ctx.beginPath();
-          ctx.ellipse(0, 0, p.size * 1.5, p.size * 0.8, 0, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.restore();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
       }
 
-      for (let i = ripples.length - 1; i >= 0; i--) {
-        const rip = ripples[i];
-        rip.radius += 1.2;
-        rip.alpha -= 0.02;
+      // Ondas en desktop
+      if (!isMobile && ripples.length > 0) {
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rip = ripples[i];
+          rip.radius += 1.2;
+          rip.alpha -= 0.02;
 
-        if (rip.alpha <= 0) {
-          ripples.splice(i, 1);
-          continue;
+          if (rip.alpha <= 0) {
+            ripples.splice(i, 1);
+            continue;
+          }
+
+          ctx.beginPath();
+          ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(192, 132, 252, ${rip.alpha * 0.5})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
         }
-
-        ctx.beginPath();
-        ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(192, 132, 252, ${rip.alpha * 0.6})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
       }
 
       ctx.globalAlpha = 1.0;
@@ -230,7 +216,6 @@ export const FondoCanvas: React.FC<FondoCanvasProps> = ({ isPaused = false }) =>
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handlePointerMove);
-      window.removeEventListener('touchmove', handlePointerMove);
     };
   }, []);
 

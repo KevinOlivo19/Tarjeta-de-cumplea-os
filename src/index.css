@@ -53,6 +53,21 @@ body {
               inset 0 0 25px rgba(192, 132, 252, 0.15);
 }
 
+@media (max-width: 768px) {
+  .glass-panel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(17, 7, 34, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  }
+  .glass-panel-glow {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(22, 10, 44, 0.96);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.85);
+  }
+}
+
 .text-gold-glow {
   text-shadow: 0 0 15px rgba(245, 158, 11, 0.6), 0 0 30px rgba(245, 158, 11, 0.3);
 }

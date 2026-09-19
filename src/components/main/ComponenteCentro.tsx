@@ -13,34 +13,25 @@ export const ComponenteCentro: React.FC<ComponenteCentroProps> = ({ onClick }) =
 
   return (
     <motion.div
-      initial={{ scale: 0.7, opacity: 0, y: 30 }}
+      initial={{ scale: 0.8, opacity: 0, y: 15 }}
       animate={{ scale: 1, opacity: 1, y: 0 }}
-      transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
       className="relative flex flex-col items-center justify-center select-none"
     >
-      {/* Halo */}
-      <motion.div
-        animate={{
-          scale: [1, 1.12, 1],
-          opacity: [0.5, 0.85, 0.5],
-        }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute w-48 h-48 xs:w-54 xs:h-54 sm:w-[22rem] sm:h-[22rem] md:w-[32rem] md:h-[32rem] lg:w-[38rem] lg:h-[38rem] rounded-full bg-gradient-to-r from-purple-600/35 via-violet-500/30 to-fuchsia-600/25 blur-3xl pointer-events-none"
-      />
+      {/* Halo Estático */}
+      <div className="absolute w-44 h-44 xs:w-50 xs:h-50 sm:w-[20rem] sm:h-[20rem] md:w-[28rem] md:h-[28rem] rounded-full bg-gradient-to-r from-purple-600/30 via-violet-500/25 to-fuchsia-600/20 blur-2xl opacity-70 pointer-events-none" />
 
       {/* Floating Sparkles */}
-      <div className="absolute top-0.5 right-1.5 md:top-1 md:right-3 text-amber-300 animate-pulse pointer-events-none">
-        <Sparkles className="w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 drop-shadow-[0_0_12px_rgba(251,191,36,0.9)]" />
+      <div className="absolute top-0.5 right-1.5 md:top-1 md:right-3 text-amber-300 pointer-events-none">
+        <Sparkles className="w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
       </div>
-      <div className="absolute bottom-0.5 left-1.5 md:bottom-1 md:left-3 text-purple-300 animate-pulse-slow pointer-events-none">
-        <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 md:w-6 md:h-6 lg:w-7 lg:h-7 drop-shadow-[0_0_10px_rgba(216,180,254,0.9)]" />
+      <div className="absolute bottom-0.5 left-1.5 md:bottom-1 md:left-3 text-purple-300 pointer-events-none">
+        <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 md:w-6 md:h-6 lg:w-7 lg:h-7 drop-shadow-[0_0_8px_rgba(216,180,254,0.8)]" />
       </div>
 
       {/* Frame Container */}
       <motion.div
-        animate={{ y: [-3, 3, -3] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.96 }}
         onClick={onClick}
         role="button"

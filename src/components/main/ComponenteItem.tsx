@@ -231,9 +231,9 @@ export const ComponenteItem: React.FC<ComponenteItemProps> = ({
   return (
     <motion.div
       initial={{
-        y: initialOffset.y * 0.4,
+        y: initialOffset ? initialOffset.y * 0.25 : 15,
         opacity: 0,
-        scale: 0.5,
+        scale: 0.8,
       }}
       animate={{
         x: 0,
@@ -242,9 +242,9 @@ export const ComponenteItem: React.FC<ComponenteItemProps> = ({
         scale: 1,
       }}
       transition={{
-        duration: 1.2,
-        delay: floatDelay * 0.12,
-        ease: [0.16, 1, 0.3, 1],
+        duration: 0.5,
+        delay: floatDelay * 0.08,
+        ease: 'easeOut',
       }}
       className="relative z-20 flex flex-col items-center shrink-0"
     >
@@ -255,10 +255,7 @@ export const ComponenteItem: React.FC<ComponenteItemProps> = ({
                 scale: [1, 1.15, 1],
                 rotate: [-2, 2, -2],
               }
-            : {
-                y: [-5, 5, -5],
-                rotate: [-1, 1, -1],
-              }
+            : undefined
         }
         transition={
           isHighlighted
@@ -267,16 +264,11 @@ export const ComponenteItem: React.FC<ComponenteItemProps> = ({
                 repeat: Infinity,
                 ease: 'easeInOut',
               }
-            : {
-                duration: 4.5 + floatDelay,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: floatDelay,
-              }
+            : undefined
         }
         whileHover={{
-          scale: 1.1,
-          transition: { duration: 0.25 },
+          scale: 1.08,
+          transition: { duration: 0.15 },
         }}
         whileTap={{ scale: 0.94 }}
         onMouseEnter={handleMouseEnter}
@@ -288,12 +280,12 @@ export const ComponenteItem: React.FC<ComponenteItemProps> = ({
       >
         {/* Halo resplandeciente exterior */}
         <div
-          className={`absolute inset-0 rounded-2xl sm:rounded-3xl transition-all duration-300 blur-xl ${
+          className={`absolute inset-0 rounded-2xl sm:rounded-3xl transition-opacity duration-200 blur-lg ${
             isHighlighted
-              ? 'opacity-100 scale-135 shadow-[0_0_40px_rgba(251,191,36,0.9)]'
+              ? 'opacity-100 shadow-[0_0_30px_rgba(251,191,36,0.9)]'
               : isHintActive
-              ? 'opacity-100 scale-125 shadow-[0_0_30px_rgba(251,191,36,0.95)]'
-              : 'opacity-60 group-hover:opacity-100 group-hover:scale-125'
+              ? 'opacity-100 shadow-[0_0_25px_rgba(251,191,36,0.95)]'
+              : 'opacity-40 group-hover:opacity-80'
           } pointer-events-none`}
           style={{ background: isHighlighted || isHintActive ? 'rgba(251, 191, 36, 0.95)' : currentTheme.glowColor }}
         />
