@@ -56,6 +56,15 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
     const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
     const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
 
+    // Si desliza hacia abajo claramente para cerrar la pantalla
+    if (deltaY > 60 && deltaY > Math.abs(deltaX) * 1.3) {
+      soundEngine.playModalClose();
+      onClose();
+      touchStartXRef.current = null;
+      touchStartYRef.current = null;
+      return;
+    }
+
     // Detectar deslizamiento horizontal claro (al menos 40px y más horizontal que vertical)
     if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
       if (deltaX < 0) {
@@ -140,6 +149,15 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.96, opacity: 0 }}
         transition={{ type: 'spring', damping: 28, stiffness: 340 }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0.05, bottom: 0.5 }}
+        onDragEnd={(_e, info) => {
+          if (info.offset.y > 60 || info.velocity.y > 250) {
+            soundEngine.playModalClose();
+            onClose();
+          }
+        }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         style={{
@@ -365,6 +383,15 @@ export const Modulo1: React.FC<Modulo1Props> = ({ onClose }) => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              drag="y"
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={{ top: 0.05, bottom: 0.6 }}
+              onDragEnd={(_e, info) => {
+                if (info.offset.y > 60 || info.velocity.y > 250) {
+                  soundEngine.playModalClose();
+                  setPreviewImage(null);
+                }
+              }}
               onClick={(e) => e.stopPropagation()}
               className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center p-2 rounded-2xl bg-[#090214] border border-amber-400/40 shadow-[0_0_50px_rgba(0,0,0,0.95)] overflow-hidden"
             >

@@ -120,6 +120,15 @@ export const Modulo3: React.FC<Modulo3Props> = ({ onClose }) => {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.98, opacity: 0 }}
           transition={{ type: 'spring', damping: 28, stiffness: 340 }}
+          drag="y"
+          dragConstraints={{ top: 0, bottom: 0 }}
+          dragElastic={{ top: 0.05, bottom: 0.5 }}
+          onDragEnd={(_e, info) => {
+            if (info.offset.y > 65 || info.velocity.y > 250) {
+              soundEngine.playModalClose();
+              onClose();
+            }
+          }}
           style={{
             background: 'radial-gradient(ellipse at 50% 0%, #1a0833 0%, #0d031c 65%, #070110 100%)',
           }}

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { birthdayContent } from '../../data/birthdayContent';
+import { soundEngine } from '../../utils/soundSynth';
 
 interface Modulo2Props {
   onClose: () => void;
@@ -39,12 +40,23 @@ export const Modulo2: React.FC<Modulo2Props> = ({ onClose }) => {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.92, opacity: 0, y: 15 }}
         transition={{ type: 'spring', damping: 26, stiffness: 300 }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0.05, bottom: 0.6 }}
+        onDragEnd={(_e, info) => {
+          if (info.offset.y > 60 || info.velocity.y > 250) {
+            soundEngine.playModalClose();
+            onClose();
+          }
+        }}
         className="relative z-10 w-full max-w-[98vw] sm:max-w-[92vw] md:max-w-4xl lg:max-w-5xl max-h-[94dvh] flex flex-col rounded-2xl sm:rounded-3xl border-2 border-[#b89363]/85 overflow-hidden mx-auto select-text"
         style={{
           background: 'radial-gradient(ellipse at center 20%, #fffef9 0%, #faefd7 35%, #f1dcba 70%, #dfbf8e 100%)',
           boxShadow: 'inset 0 0 50px rgba(139, 87, 36, 0.3), inset 0 0 100px rgba(90, 50, 15, 0.16), 0 25px 70px rgba(0, 0, 0, 0.95), 0 0 35px rgba(212, 160, 96, 0.3)',
         }}
       >
+        {/* Barra de agarre para deslizar en móvil */}
+        <div className="w-12 h-1 rounded-full bg-[#8b5724]/40 mx-auto mt-2 -mb-1 md:hidden pointer-events-none" />
         {/* Antique Wax Seal Close Button */}
         <button
           onClick={onClose}

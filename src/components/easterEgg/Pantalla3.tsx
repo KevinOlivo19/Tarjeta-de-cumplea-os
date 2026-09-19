@@ -145,8 +145,20 @@ export const Pantalla3: React.FC<Pantalla3Props> = ({ onClose, onSolved }) => {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 15 }}
         transition={{ type: 'spring', damping: 26, stiffness: 280 }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0.05, bottom: 0.6 }}
+        onDragEnd={(_e, info) => {
+          if (info.offset.y > 60 || info.velocity.y > 250) {
+            soundEngine.playModalClose();
+            onClose();
+          }
+        }}
         className="relative z-10 w-full max-w-xl flex flex-col items-center"
       >
+        {/* Barra de agarre para deslizar en móvil */}
+        <div className="w-12 h-1 rounded-full bg-amber-300/40 mx-auto -mt-2 mb-3 md:hidden pointer-events-none" />
+
         {/* Encabezado compacto en móviles para ahorrar altura de pantalla */}
         <div className="text-center mb-3 sm:mb-6 max-w-md mx-auto">
           <div className="inline-flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-purple-950/90 border border-amber-400/50 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.5)] mb-1.5 sm:mb-2">
