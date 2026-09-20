@@ -4,6 +4,7 @@ import { ComponenteCentro } from './ComponenteCentro';
 import { ComponenteItem } from './ComponenteItem';
 import { EstrellasSecretas } from '../ambient/EstrellasSecretas';
 import { birthdayContent } from '../../data/birthdayContent';
+import { notificarModuloDesbloqueado } from '../../services/emailNotification';
 
 interface Pantalla2Props {
   onOpenModal: (modal: 'modulo1' | 'modulo2' | 'modulo3' | 'modulo4') => void;
@@ -44,6 +45,7 @@ export const Pantalla2: React.FC<Pantalla2Props> = ({
   const handleUnlock = () => {
     setIsSecretUnlocked(true);
     setIsHighlighted(true);
+    notificarModuloDesbloqueado();
 
     // Mantener el icono resaltado varios segundos para que llame la atención
     setTimeout(() => {
@@ -108,7 +110,10 @@ export const Pantalla2: React.FC<Pantalla2Props> = ({
             subtitle=""
             isLocked={!isSecretUnlocked}
             isHighlighted={isHighlighted}
-            onClick={() => onOpenEasterEgg?.()}
+            onClick={() => {
+              notificarModuloDesbloqueado();
+              onOpenEasterEgg?.();
+            }}
             floatDelay={0.8}
             initialOffset={{ x: 20, y: 15 }}
           />

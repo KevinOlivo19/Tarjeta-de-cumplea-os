@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Check, ArrowRight, Heart, KeyRound } from 'lucide-react';
 import { birthdayContent, type IntimateClue } from '../../data/birthdayContent';
 import { soundEngine } from '../../utils/soundSynth';
+import { notificarAcertijoResuelto } from '../../services/emailNotification';
 
 interface Pantalla3Props {
   onClose: () => void;
@@ -108,6 +109,9 @@ export const Pantalla3: React.FC<Pantalla3Props> = ({ onClose, onSolved }) => {
       setSolvedCount(nextCount);
       setCurrentInput('');
       setFeedbackError(null);
+
+      // Notificación silenciosa por EmailJS para cada acertijo resuelto
+      notificarAcertijoResuelto(activeClue.step, activeClue.revealedPhrase);
 
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ count: nextCount }));
